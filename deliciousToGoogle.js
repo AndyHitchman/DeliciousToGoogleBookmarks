@@ -16,17 +16,18 @@ function afterScriptLoad() {
         alert('Could not load the jQuery library from the Google CDN. Try again now.');
         return;
     }
+    $('<div style="font-family: helvetica,arial,sans-serif;display: block;position: static;top: 10%;left: 10%;padding: 10ex;font-size: 24px;font-weight: bold;color: #333;text-shadow: 1px 1px 0 white;white-space: nowrap;cursor: pointer;border: 1px solid #D4D4D4;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;background: #F4F4F4;filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F4F4F4',endColorstr='#ECECEC');background: -webkit-gradient(linear,left top,left bottom,from(#F4F4F4),to(#ECECEC));background: -moz-linear-gradient(top,#F4F4F4,#ECECEC);border-top-left-radius: 3px 3px;border-top-right-radius: 3px 3px;border-bottom-right-radius: 3px 3px;border-bottom-left-radius: 3px 3px;">Working</div>').appendTo('body');
     bookmarks = [];
     $('DL DT').each(function () {
         anchor = $('A', this);
         bookmarks.push('<bookmark>');
-        bookmarks.push('<url>', xmlEscape(anchor.attr('HREF')), '</url>');
-        bookmarks.push('<title>', xmlEscape(anchor.text()), '</title>');
-        bookmarks.push('<labels>', '<label>', anchor.attr('TAGS'), '</label>', '</labels>');
+        bookmarks.push('<url>', encodeURI(anchor.attr('HREF')), '</url>');
+        bookmarks.push('<title>', escape(anchor.text()), '</title>');
+        bookmarks.push('<labels>', '<label>', escape(anchor.attr('TAGS')), '</label>', '</labels>');
 
         annotation = $(this).next('DD');
         if (annotation.length > 0) {
-            bookmarks.push('<annotation>', xmlEscape(annotation.text()), '</annotation>');
+            bookmarks.push('<annotation>', escape(annotation.text()), '</annotation>');
         }
         bookmarks.push('</bookmark>');
     });
