@@ -21,19 +21,27 @@
    href="javascript:(function(){
   dynaLoad=document.createElement('SCRIPT');
   dynaLoad.type='text/javascript';
-  dynaLoad.src='https://github.com/AndyHitchman/DeliciousToGoogleBookmarks/raw/master/deliciousToGoogle.js';
+  dynaLoad.src='https://andyhitchman.github.com/DeliciousToGoogleBookmarks/deliciousToGoogle.js';
+  dynaLoad.src='deliciousToGoogle.js';
   document.getElementsByTagName('head')[0].appendChild(dynaLoad);
 })();">Upload to Google Bookmarks</a>
 <p>
 This javascript bookmarklet uploads exported Delicious bookmarks to your Google Bookmarks account.
-Drag the link to your browser toolbar.
+<ol>
+    <li>Drag the link above to your browser toolbar.</li>
+    <li>Make sure you are logged in to <a href="http://www.google.com/bookmarks">Google Bookmarks</a></li>
+    <li><a href="https://secure.delicious.com/settings/bookmarks/export">Export your bookmarks</a> from Delicious</li>
+    <li>Open the download file in you browser</li>
+    <li>Click the bookmarklet you dragged to the tookbar</li>
+    <li>Wait a little while the script assembles the upload for Google</li>
+    <li>You'll be redirected to the Google Bookmark bulk upload page. All of your Delicious bookmarks, with tags should be listed ready for import</li>
+</ol>
 </p>
 <p>
-Export your bookmarks from Delicious and open the file in your browser. Then click the bookmarklet on the toolbar.
-You will be redirected to the Google Bookmarks bulk uploader showing your Delicious bookmarks, with tags.
+Note that the private setting on Delicious bookmarks is IGNORED. You'll need to change this after import. All imported bookmarks are private by default.
 </p>
 <p>
-Privacy settings are IGNORED.
+Unfortunately you cannot import annotations against bookmarks.
 </p>
 
 </body>
