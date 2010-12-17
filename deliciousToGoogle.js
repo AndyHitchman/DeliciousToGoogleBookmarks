@@ -19,11 +19,10 @@ function xmlEscape(str) {
 }
 
 function afterScriptLoad() {
+	if(typeof jQuery == 'undefined') {
+		alert('Waiting for the jQuery library to load from the Google CDN. Try again right now.');
+	}
     $(document).ready(function () {
-        if (typeof jQuery == 'undefined') {
-            alert('Could not load the jQuery library from the Google CDN. Try again now.');
-            return;
-        }
         bookmarks = [];
         $('DL DT').each(function (i) {
             anchor = $('A', this);
