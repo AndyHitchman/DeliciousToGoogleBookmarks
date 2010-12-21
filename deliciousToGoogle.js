@@ -59,13 +59,16 @@ function afterScriptLoad() {
         googleBookmarks.push('</bookmark>');
     }
 
+    i = 0;
+	batchSize = 100;
+	
     function batch() {
         working.innerText = "Converting " + i + " of " + deliciousBookmarks.length + " bookmarks..."
-        deliciousBookmarks.slice(i, i + 10).each(function () {
+        deliciousBookmarks.slice(i, i + batchSize).each(function () {
             convertBookmark(this);
         });
 
-        i += 10;
+        i += batchSize;
         if (i < deliciousBookmarks.length) {
             setTimeout(batch, 0);
         }
@@ -74,6 +77,5 @@ function afterScriptLoad() {
         }
     }
 
-    i = 0;
     setTimeout(batch, 0);
 }
