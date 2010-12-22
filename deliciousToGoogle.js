@@ -11,56 +11,60 @@ function xmlEscape(str) {
             .replace(/&/g, "&amp;");
 }
 
-deliciousBookmarks = document.getElementsByTagName('DT');
-googleBookmarks = [];
-renderPause = navigator.userAgent.indexOf("Firefox") != -1 ? 125 : 0;
+function convert() {
+    deliciousBookmarks = document.getElementsByTagName('DT');
+    googleBookmarks = [];
+    renderPause = navigator.userAgent.indexOf("Firefox") != -1 ? 125 : 0;
+    block = 0;
+    batchSize = deliciousBookmarks.length > 10000 
+                    ? 1000
+                    : deliciousBookmarks.length > 1000
+                        ? 100 : 10;
 
-function postToGoogle() {
-    working.innerText = "Posting " + deliciousBookmarks.length + " bookmarks to Google..."
+    function postToGoogle() {
+        working.innerText = "Posting " + deliciousBookmarks.length + " bookmarks to Google..."
 
-    bookmarkForm = [
-        '<form id="uploader" action="https://www.google.com/bookmarks/mark?op=upload" method="post">',
-        '<textarea id="data" rows="30" columns="60" name="<?xml version">',
-        '"1.0" encoding="utf-8"?>',
-        '<bookmarks>',
-        googleBookmarks.join(''),
-        '</bookmarks>',
-        '</textarea>',
-        '</form>'].join('');
+        bookmarkForm = [
+            '<form id="uploader" action="https://www.google.com/bookmarks/mark?op=upload" method="post">',
+            '<textarea id="data" rows="30" columns="60" name="<?xml version">',
+            '"1.0" encoding="utf-8"?>',
+            '<bookmarks>',
+            googleBookmarks.join(''),
+            '</bookmarks>',
+            '</textarea>',
+            '</form>'].join('');
 
-    postForm = document.createElement("div");
-    postForm.innerHTML = bookmarkForm;
-    document.getElementsByTagName('body')[0].appendChild(postForm);
-    document.getElementById('uploader').submit();
-}
-
-function convertBookmark(node) {
-    anchor = node.firstChild;
-    googleBookmarks.push('<bookmark>');
-    googleBookmarks.push('<url>', xmlEscape(anchor.href), '</url>');
-    googleBookmarks.push('<title>', xmlEscape(anchor.innerHTML), '</title>');
-    googleBookmarks.push('<labels>', '<label>', xmlEscape(anchor.getAttribute('TAGS')), '</label>', '</labels>');
-    googleBookmarks.push('</bookmark>');
-}
-
-i = 0;
-batchSize = 100;
-
-function batch() {
-    alert('batch ' + i);
-    working.innerText = "Converting " + i + " of " + deliciousBookmarks.length + " bookmarks...";
-    for (var slice = 0; slice < batchSize && i + slice < deliciousBookmarks.length; slice++) {
-        convertBookmark(deliciousBookmarks[i + slice]);
+        postForm = document.createElement("div");
+        postForm.innerHTML = bookmarkForm;
+        document.getElementsByTagName('body')[0].appendChild(postForm);
+        document.getElementById('uploader').submit();
     }
 
-    i += batchSize;
-    if (i < deliciousBookmarks.length) {
-        setTimeout(function () { batch(); }, renderPause);
+    function convertBookmark(node) {
+        anchor = node.firstChild;
+        googleBookmarks.push('<bookmark>');
+        googleBookmarks.push('<url>', xmlEscape(anchor.href), '</url>');
+        googleBookmarks.push('<title>', xmlEscape(anchor.innerHTML), '</title>');
+        googleBookmarks.push('<labels>', '<label>', xmlEscape(anchor.getAttribute('TAGS')), '</label>', '</labels>');
+        googleBookmarks.push('</bookmark>');
     }
-    else {
-        setTimeout(function() { postToGoogle(); }, renderPause);
+
+    function batch() {
+        working.innerText = "Converting " + block + " of " + deliciousBookmarks.length + " bookmarks...";
+        for (var slice = 0; slice < batchSize && block + slice < deliciousBookmarks.length; slice++) {
+            convertBookmark(deliciousBookmarks[block + slice]);
+        }
+
+        block += batchSize;
+        if (block < deliciousBookmarks.length) {
+            setTimeout(batch, renderPause);
+        }
+        else {
+            setTimeout(postToGoogle, renderPause);
+        }
     }
+
+    setTimeout(batch, renderPause);
 }
 
-alert('inline');
-setTimeout(function () { batch(); }, renderPause);
+convert();
